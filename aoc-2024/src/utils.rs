@@ -1,3 +1,4 @@
+use colored::Colorize;
 use reqwest::header::{HeaderMap, HeaderValue, COOKIE};
 use std::env;
 use std::fs;
@@ -11,7 +12,7 @@ pub fn read_input(year: i32, day: i32) -> Result<String, Box<dyn std::error::Err
     let file_path = dir_path.join(format!("{}.txt", day));
 
     if !dir_path.exists() {
-        fs::create_dir_all(&dir_path)?;
+        fs::create_dir_all(dir_path)?;
     }
 
     if !file_path.exists() {
@@ -27,6 +28,16 @@ pub fn read_input(year: i32, day: i32) -> Result<String, Box<dyn std::error::Err
     }
 }
 
+pub fn print_result(year: i32, day: i32, half: i32, result: String) {
+    println!(
+        "Result for [{}-{}-{}]: {}",
+        year.to_string().yellow(),
+        day.to_string().yellow(),
+        half.to_string().yellow(),
+        result.green()
+    );
+}
+
 fn make_request(year: i32, day: i32) -> Result<String, Box<dyn std::error::Error>> {
     let uri: String = format!("https://adventofcode.com/{}/day/{}/input", year, day);
     let token_key = "AOC_TOKEN";
@@ -35,7 +46,7 @@ fn make_request(year: i32, day: i32) -> Result<String, Box<dyn std::error::Error
     let client = reqwest::blocking::Client::new();
     let mut headers = HeaderMap::new();
     headers.insert(COOKIE, HeaderValue::from_str(&aoc_token)?);
-    println!("Making request to: {}", uri);
+    println!("{}{}", "Making request to: ".red(), uri.red());
     let response = client.get(uri).headers(headers).send()?;
     Ok(response.text().unwrap())
 }
