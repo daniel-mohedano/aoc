@@ -17,8 +17,8 @@ pub fn read_input(year: i32, day: i32) -> Result<String, Box<dyn std::error::Err
 
     if !file_path.exists() {
         // Cache input
-        let mut file = fs::File::create(&file_path)?;
         let input = make_request(year, day)?;
+        let mut file = fs::File::create(&file_path)?;
         file.write_all(input.as_bytes())?;
         Ok(input)
     } else {
